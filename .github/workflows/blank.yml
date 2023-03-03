@@ -1,0 +1,29 @@
+name: Call API with JSON parameters
+
+on:
+  workflow_dispatch:
+    inputs:
+      file1:
+        description: 'File 1'
+        required: true
+
+jobs:
+  call-api:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Call API
+      env:
+        FILE1: ${{ github.workspace }}/${{ inputs.file1 }}
+        FILE2: ${{ github.workspace }}/file2.json
+        FILE3: ${{ github.workspace }}/file3.json
+      run: |
+        curl -X POST \
+          -H "Content-Type: application/json" \
+          -d @$FILE1 \
+          -d @$FILE2 \
+          -d @$FILE3 \
+          https://your-api-url.com/endpoint
