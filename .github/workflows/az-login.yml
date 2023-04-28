@@ -11,34 +11,20 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    # - name: 'Az CLI login'
-    #   uses: azure/login@v1
-    #   with:
-    #       client-id: ${{ secrets.AZURE_CLIENT_ID }}
-    #       tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-    #       subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
-    # - name: 'Run Azure CLI commands'
-    #   run: |
-    #       az account show
-    #       az group list
-    #       pwd
     - name: Prase AZURE_MSI secret
       id: msiPrincipal
       env:
         SECRET: ${{ secrets.AZURE_MSI }}
       run: |
-        clientId=$(echo $SECRET | jq -r '.["name"]')
+        clientId=$(echo $SECRET | jq -r '.["clientId"]')
         tenantId=$(echo $SECRET | jq -r '.["tenantId"]')
         subscriptionId=$(echo $SECRET | jq -r '.["id"] | split("/")[2]')
-        principalId=$(echo $SECRET | jq -r '.["principalId"]')
         echo "::add-mask::$clientId"
         echo "::add-mask::$tenantId"
         echo "::add-mask::$subscriptionId"
-        echo "::add-mask::$principalId"
         echo clientId=$clientId >> $GITHUB_OUTPUT
         echo tenantId=$tenantId >> $GITHUB_OUTPUT
         echo subscriptionId=$subscriptionId >> $GITHUB_OUTPUT
-        echo objectId=$principalId >> $GITHUB_OUTPUT
 
     # Login
     - name: 'Azure login'
@@ -47,3 +33,8 @@ jobs:
         client-id: ${{ steps.msiPrincipal.outputs.clientId }}
         tenant-id: ${{ steps.msiPrincipal.outputs.tenantId }}
         subscription-id: ${{ steps.msiPrincipal.outputs.subscriptionId }}
+    # Logout
+    - name: 'Azure logout'
+      run: |
+        az logout
+      if: always()
