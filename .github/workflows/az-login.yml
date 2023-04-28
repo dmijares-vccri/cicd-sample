@@ -1,10 +1,11 @@
 name: Azure Login Test
 on: 
-  workflow_call
+  workflow_dispatch:
+  # call the workflow
 
 permissions:
-      id-token: write
-      contents: read
+  id-token: write
+  contents: read
       
 jobs: 
   build-and-deploy:
