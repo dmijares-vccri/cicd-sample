@@ -1,7 +1,7 @@
 name: Build and publish
 on:
    
-  workflow_call:
+  workflow_dispatch:
     inputs:
       AZ_ACR_NAME: 
         type: string
