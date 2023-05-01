@@ -1,0 +1,29 @@
+name: Azure Login Test
+on:
+   
+  workflow_call:
+    inputs:
+      AZ_ACR_NAME: 
+        type: string
+        description: 'Azure Function App name'
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+      
+jobs: 
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Build and deploy Container App
+      uses: azure/container-apps-deploy-action@v1
+      with:
+        appSourcePath: ${{ github.workspace }}
+        acrName: AZ_ACR_NAME
