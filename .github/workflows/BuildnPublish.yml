@@ -1,4 +1,4 @@
-name: Azure Login Test
+name: Build and publish
 on:
    
   workflow_call:
