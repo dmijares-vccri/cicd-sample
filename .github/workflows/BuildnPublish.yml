@@ -17,13 +17,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Log in to Azure
+    # Login
+    - name: 'Azure login'
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: ${{ steps.msiPrincipal.outputs.clientId }}
+        tenant-id: ${{ steps.msiPrincipal.outputs.tenantId }}
+        subscription-id: ${{ steps.msiPrincipal.outputs.subscriptionId }}
 
     - name: Build and deploy Container App
       uses: azure/container-apps-deploy-action@v1
       with:
         appSourcePath: ${{ github.workspace }}
         acrName: AZ_ACR_NAME
+    # Logout
+    - name: 'Azure logout'
+      run: |    
+        az logout
+      if: always()
