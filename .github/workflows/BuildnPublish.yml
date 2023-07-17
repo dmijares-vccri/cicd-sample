@@ -16,8 +16,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      SECRET: ${{ secrets.AZURE_MSI }}
-
+      id: msiPrincipal
+      env:
+        SECRET: ${{ secrets.AZURE_MSI }}
     steps:
     # Login
     - name: 'Azure login'
